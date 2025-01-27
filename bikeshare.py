@@ -129,7 +129,7 @@ def time_stats(df):
 
     print("\nThis took %.2f seconds." % (time.time() - start_time))
     print('-' * 40)
-    
+
 def station_stats(df):
     """
     This menthod displays statistics on the most popular stations and trip.
@@ -162,21 +162,23 @@ def trip_duration_stats(df):
 
     # Display total travel time
     total_duration = df['Trip Duration'].sum()
-    minute, second = divmod(total_duration, 60)
-    hour, minute = divmod(minute, 60)
-    print("The Total Travel Time is {} Hours, {} Minutes, and {} Seconds.".format(hour, minute, second))
+    hours, remainder = divmod(total_duration, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    print(f"The Total Travel Time is {hours} Hours, {minutes} Minutes, and {seconds} Seconds.")
 
     # Display mean travel time
     average_duration = round(df['Trip Duration'].mean())
-    minute, second = divmod(average_duration, 60)
-    if minute> 60:
-        hour, minute = divmod(minute, 60)
-        print('The Average Travel Time is {} Hours, {} Minutes, and {} seconds.'.format(hour, minute, second))
+    minutes, seconds = divmod(average_duration, 60)
+    hours, minutes = divmod(minutes, 60) if minutes >= 60 else (0, minutes)
+
+    if hours > 0:
+        print(f'The Average Travel Time is {hours} Hours, {minutes} Minutes, and {seconds} Seconds.')
     else:
-        print('The Average Trip Duration is {} Minutes and {} Seconds.'.format(minute, second))
-        
-    print("\nThis took %s seconds." % (time.time() - start_time))
-    print('-'*40)
+        print(f'The Average Trip Duration is {minutes} Minutes and {seconds} Seconds.')
+
+    print("\nThis took %.2f seconds." % (time.time() - start_time))
+    print('-' * 40)
+
 
 def user_stats(df, city):
     """Displays statistics on bikeshare users."""
