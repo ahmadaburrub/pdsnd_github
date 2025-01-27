@@ -104,43 +104,30 @@ def time_stats(df):
     # Convert the Start Time column to datetime
     df['Start Time'] = pd.to_datetime(df['Start Time'])
 
-    # Extract month from start time column to create month column 
+    # Extract month, day of the week, and hour from Start Time
     df['month'] = df['Start Time'].dt.month
+    df['day_of_week'] = df['Start Time'].dt.day_name()
+    df['hour'] = df['Start Time'].dt.hour
+
+    # Display the most common month
     popular_month = df['month'].mode()[0]
-        
-    # Change number to months
-    if popular_month == 1:
-        popular_month = "January"
-    elif popular_month == 2:
-        popular_month = "February"
-    elif popular_month == 3:
-        popular_month = "March"
-    elif popular_month == 4:
-        popular_month = "April"
-    elif popular_month == 5:
-        popular_month = "May"
-    elif popular_month == 6:
-        popular_month = "June"
-    print('Most Common Month: \n', popular_month)
-    
+    month_name = pd.Timestamp(f'2023-{popular_month}-01').strftime('%B')  # Get full month name
+    print('Most Common Month:', month_name)
+
     # Display the most common day of the week
-    # Extract day from the Start Time column to create a day column
-    popular_day = df['day_of_week'].mode()[0] 
-    print('Most Common Day of the Week: \n', popular_day) 
+    popular_day = df['day_of_week'].mode()[0]
+    print('Most Common Day of the Week:', popular_day)
 
     # Display the most common start hour
-    df['hour'] = df['Start Time'].dt.hour #PB
-    popular_hour = df['hour'].mode()[0] #PB
-    if popular_hour < 12:
-        print('Most Common Start Hour: \n', popular_hour, ' AM')
-    elif popular_hour >= 12:
-        if popular_hour > 12:
-            popular_hour -= 12
-        print('Most Common Start Hour: \n', popular_hour, ' PM')
+    popular_hour = df['hour'].mode()[0]
+    period = 'AM' if popular_hour < 12 else 'PM'
+    formatted_hour = popular_hour if popular_hour == 12 or popular_hour == 0 else popular_hour % 12
+    formatted_hour = 12 if popular_hour == 0 else formatted_hour  # Handle midnight as 12 AM
+    print(f'Most Common Start Hour: {formatted_hour} {period}')
 
-    print("\nThis took %s seconds." % (time.time() - start_time))
-    print('-'*40)
-
+    print("\nThis took %.2f seconds." % (time.time() - start_time))
+    print('-' * 40)
+    
 def station_stats(df):
     """Displays statistics on the most popular stations and trip."""
 
